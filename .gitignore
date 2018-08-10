@@ -9,6 +9,12 @@
 pkg
 src
 
+# Generated scripts from test
+scripts/activate.bat
+scripts/deactivate.bat
+scripts/activate
+scripts/deactivate
+
 # Test binary, build with `go test -c`
 *.test
 
