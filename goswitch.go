@@ -11,6 +11,7 @@ import (
 
 var (
 	// Define variable
+	new_cmd		= kingpin.Command("new", "Create new GOPATH workdir.")
 	env_name	= kingpin.Flag("name", "Name of new GOPATH workdir.").Short('n').Default("GOPATH").String()
 	target_path	= kingpin.Flag("path", "Target path for script files.").Short('p').Default("scripts").String()
 	filemode	= kingpin.Flag("filemode", "Filemode for creating file and directory.").Short('m').Default("0644").Int()
@@ -18,9 +19,11 @@ var (
 
 func main() {
 	// Parse arguments
-	kingpin.Version("1.0.0")
-	kingpin.Parse()
-	apply()
+	kingpin.Version("1.0.1")
+	switch kingpin.Parse() {
+		case "new":
+			apply()
+	}
 }
 
 func apply() {

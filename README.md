@@ -20,5 +20,5 @@ Add goswitch executable to PATH variable, so you can access goswitch everywhere 
 
 - Copy `goswitch.exe` to `C:\Program Files\GoSwitch\goswitch.exe`
 - Open `Control Panel` -> `System and Security` -> `System` -> `Advanced system settings` -> Click button `Environment Variables..`
-- On tab User variables for %user%, edit `PATH` and add `;C:\Program Files\GoSwitch` on end of text
+- On tab User variables for %user%, edit `PATH` and add `;C:\Program Files\GoSwitch` at the end
 - Open new CMD, type `goswitch`
