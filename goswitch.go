@@ -14,7 +14,7 @@ var (
 	new_cmd		= kingpin.Command("new", "Create new GOPATH workdir.")
 	env_name	= kingpin.Flag("name", "Name of new GOPATH workdir.").Short('n').Default("GOPATH").String()
 	target_path	= kingpin.Flag("path", "Target path for script files.").Short('p').Default("scripts").String()
-	filemode	= kingpin.Flag("filemode", "Filemode for creating file and directory.").Short('m').Default("0644").Int()
+	filemode	= kingpin.Flag("filemode", "Filemode for creating file and directory.").Short('m').Default("0777").Int()
 )
 
 func main() {
@@ -49,7 +49,16 @@ func apply() {
 		fmt.Println("   - Deactivate -> deactivate")
 		fmt.Println(" * Done!")
 	} else if runtime.GOOS == "linux" {
-		
+		// File script files
+		write_script_linux(go_path)
+
+		// Print information
+		fmt.Println(" * Create script files for Linux")
+		fmt.Println(" * How to use:")
+		fmt.Println("   - BASH Only")
+		fmt.Println("   - Activate -> source " +*target_path+ "/activate")
+		fmt.Println("   - Deactivate -> deactivate")
+		fmt.Println(" * Done!")
 	} else if runtime.GOOS == "darwin" {
 		
 	} else {
@@ -119,4 +128,76 @@ set "_OLD_CMD_GOPATH=
 	file_writer(path.Join(go_path, *target_path, "activate.bat"), text_activate)
 	// Write deactivate.bat on windows
 	file_writer(path.Join(go_path, *target_path, "deactivate.bat"), text_deactivate)
+}
+
+func write_script_linux(go_path string) {
+	text_activate := `deactivate () {
+	if [ -n "${_OLD_CMD_PATH:-}" ] ; then
+		PATH="${_OLD_CMD_PATH:-}"
+		export PATH
+		unset _OLD_CMD_PATH
+	fi
+	
+	if [ -n "${_OLD_CMD_GOPATH:-}" ] ; then
+		GOPATH="${_OLD_CMD_GOPATH:-}"
+		export GOPATH
+		unset _OLD_CMD_GOPATH
+	fi
+	
+	if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
+		hash -r
+	fi
+	
+	if [ -n "${_OLD_CMD_PS1:-}" ] ; then
+		PS1="${_OLD_CMD_PS1:-}"
+		export PS1
+		unset _OLD_CMD_PS1
+	fi
+	
+	unset GOPATH
+	
+	if [ ! "$1" = "nondestructive" ] ; then
+	# Self destruct!
+		unset -f deactivate
+	fi
+}
+	
+deactivate nondestructive
+	
+if [ -n "${GOPATH:-}" ] ; then
+	_OLD_CMD_GOPATH="${GOPATH:-}"
+	unset GOPATH
+fi
+
+GOPATH="` +go_path+ `"
+export GOPATH
+
+_OLD_CMD_PATH="$PATH"
+PATH="$GOPATH:$GOPATH/bin:$PATH"
+export PATH
+	
+if [ -z "${_CMD_DISABLE_PROMPT:-}" ] ; then
+	_OLD_CMD_PS1="${PS1:-}"
+	if [ "x(` +*env_name+ `) " != x ] ; then
+		PS1="(` +*env_name+ `) ${PS1:-}"
+	else
+		if [ "`+"`"+`basename \"$GOPATH\"`+"`"+`" = "__" ] ; then
+			PS1="[`+"`"+`basename \`+"`"+`dirname \"$GOPATH\"\`+"``"+`] $PS1"
+		else
+			PS1="(`+"`"+`basename \"$GOPATH\"`+"`"+`)$PS1"
+		fi
+	fi
+	export PS1
+fi
+
+if [ -n "${BASH:-}" -o -n "${ZSH_VERSION:-}" ] ; then
+	hash -r
+fi`
+
+	// Filepath
+	filepath := path.Join(go_path, *target_path, "activate")
+	// Clean file
+	os.Remove(filepath)
+	// Write activate.bat on windows
+	file_writer(filepath, text_activate)
 }

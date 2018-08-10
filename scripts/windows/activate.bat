@@ -17,7 +17,7 @@ if defined _OLD_CMD_GOPATH (
 	set "_OLD_CMD_GOPATH=%GOPATH%"
 )
 set "PROMPT=(GOPATH) %PROMPT%"
-set "GOPATH=C:\goo"
+set "GOPATH=C:\GOPATH"
 set "PATH=%GOPATH%;%PATH%"
 set "PATH=%GOPATH%\scripts;%PATH%"
 :END
