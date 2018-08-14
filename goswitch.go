@@ -1,8 +1,8 @@
 package main
 
 import (
-    "fmt"
-    "os"
+	"fmt"
+	"os"
 	"path"
 	"runtime"
 	"io/ioutil"
@@ -19,7 +19,7 @@ var (
 
 func main() {
 	// Parse arguments
-	kingpin.Version("1.0.1")
+	kingpin.Version("1.0.2")
 	switch kingpin.Parse() {
 		case "new":
 			apply()
@@ -29,7 +29,7 @@ func main() {
 func apply() {
 	// Get current dir
 	go_path, err := os.Getwd()
-    check(err)
+	check(err)
 	
 	// Print info
 	fmt.Println(" * Create '" +*target_path+ "' directory")
@@ -70,16 +70,16 @@ func apply() {
 
 func check(e error) {
 	// Chek error
-    if e != nil {
-        panic(e)
-    }
+	if e != nil {
+		panic(e)
+	}
 }
 
 func file_writer(filepath string, body string) {
 	// Write file
 	data := []byte(body)
-    err := ioutil.WriteFile(filepath, data, os.FileMode(*filemode))
-    check(err)
+	err := ioutil.WriteFile(filepath, data, os.FileMode(*filemode))
+	check(err)
 }
 
 func write_script_windows(go_path string) {
