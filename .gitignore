@@ -5,6 +5,8 @@
 *.so
 *.dylib
 goswitch
+goswitch-linux-386
+goswitch-linux-amd64
 
 # Library
 pkg
